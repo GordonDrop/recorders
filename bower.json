@@ -1,0 +1,29 @@
+{
+  "name": "fountain-inject",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "1.5.3",
+    "recordrtc": "^5.4.2",
+    "wavesurfer.js": "^1.4.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {},
+  "overrides": {
+    "wavesurfer.js": {
+      "main": [
+        "dist/wavesurfer.js",
+        "dist/plugin/wavesurfer.microphone.min.js"
+      ]
+    },
+    "recordrtc": {
+      "dependencies": {
+        "wavesurfer.js": "^1.4.0"
+      }
+    },
+    "user-media-polyfill": {
+      "dependencies": {
+        "lodash": "^4.17.4"
+      }
+    }
+  }
+}

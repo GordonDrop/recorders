@@ -1,0 +1,32 @@
+<div ng-if="vm.recorder" class="audio-recorder">
+    <hc-video-viewport
+        status="vm.status">
+    </hc-video-viewport>
+
+    <video width="640" height="480" controls ng-src="{{vm.src}}"></video>
+
+    <button
+            type="button"
+            ng-disabled="vm.status == 'play'"
+            ng-click="vm.startRecording()">
+        Start recording
+    </button>
+
+    <button
+            type="button"
+            ng-disabled="vm.status == 'pause'"
+            ng-click="vm.stopRecording()">
+        Stop recording
+    </button>
+
+    <button
+            type="button"
+            ng-disabled="!vm.src"
+            ng-click="vm.saveRecording()">
+        Save
+    </button>
+</div>
+
+<div ng-if="vm.error">
+    Audio recording is not supported in your browser.
+</div>
