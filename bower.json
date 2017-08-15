@@ -12,7 +12,8 @@
     "wavesurfer.js": {
       "main": [
         "dist/wavesurfer.js",
-        "dist/plugin/wavesurfer.microphone.min.js"
+        "dist/plugin/wavesurfer.microphone.min.js",
+        "dist/plugin/wavesurfer.timeline.min.js"
       ]
     },
     "recordrtc": {

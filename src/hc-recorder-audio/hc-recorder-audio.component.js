@@ -15,15 +15,27 @@ function Controller($scope, HcRecorderService, $sce, $log) {
   vm.status = 'paused';
   vm.recorder = HcRecorderService.audioRecorder();
 
-  // TODO: this common recorder interface
-  // TODO: add resume action
-  vm.recorder
-    .then(function (recorder) {
-      vm.recorder = recorder;
-    })
-    .catch(function (error) {
-      vm.error = error
+  this.$onInit = function () {
+    this.initRecorder()
+      .then(this.bindEvents.bind(this))
+      .catch(function (error) {
+        vm.error = error
+      });
+  };
+
+  this.initRecorder = function () {
+    return vm.recorder
+      .then(function (recorder) {
+        vm.recorder = recorder;
+      });
+  };
+
+  this.bindEvents = function () {
+    $scope.$on('audioPause', function () {
+      vm.pause();
+      $scope.$digest();
     });
+  };
 
   this.startRecording = function () {
     vm.src = '';
@@ -34,18 +46,19 @@ function Controller($scope, HcRecorderService, $sce, $log) {
     $log.log(this.recorder);
   };
 
-  this.replay = function () {
-    $scope.$broadcast('replaying');
-    vm.status = 'replaying';
+  this.play = function () {
+    $scope.$broadcast('playing');
+    vm.status = 'playing';
   };
 
-  this.stop = function () {
-    vm.status = 'paused';
+  this.pause = function () {
     $scope.$broadcast('paused');
+    vm.status = 'paused';
   };
 
   this.stopRecording = function () {
-    this.stop();
+    vm.status = 'paused';
+    $scope.$broadcast('stopped');
 
     this.recorder.stopRecording()
       .then(function (url) {

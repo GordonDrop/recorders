@@ -1,12 +1,11 @@
 <div ng-if="vm.recorder" class="audio-recorder">
-    switch between:
     <hc-microphone-viewport
-        src="vm.src">
+            src="vm.src">
     </hc-microphone-viewport>
 
     <button
         type="button"
-        ng-if="vm.status == 'paused' && !vm.src"
+        ng-if="vm.status == 'paused'"
         ng-click="vm.startRecording()">
         Start recording
     </button>
@@ -18,20 +17,21 @@
         Stop recording
     </button>
 
-    <button
-            type="button"
-            ng-if="vm.src"
-            ng-disabled="vm.status == 'replaying'"
-            ng-click="vm.replay()">
-        Replay
+    <span ng-if="vm.src">
+        <button
+                type="button"
+                ng-if="vm.status == 'paused'"
+                ng-click="vm.play()">
+        Play
     </button>
 
     <button
             type="button"
-            ng-if="vm.status == 'replaying'"
-            ng-click="vm.stop()">
-        Stop
+            ng-if="vm.status == 'playing'"
+            ng-click="vm.pause()">
+        Pause
     </button>
+    </span>
 
     <button
         type="button"
