@@ -11,8 +11,8 @@ angular
 
 function Controller($scope, HcRecorderService, $sce, $log) {
   var vm = this;
-  vm.audioUrl = '';
-  vm.status = 'stop';
+  vm.src = '';
+  vm.status = 'paused';
   vm.recorder = HcRecorderService.audioRecorder();
 
   // TODO: this common recorder interface
@@ -20,31 +20,42 @@ function Controller($scope, HcRecorderService, $sce, $log) {
   vm.recorder
     .then(function (recorder) {
       vm.recorder = recorder;
-      console.log(vm.recorder);
     })
     .catch(function (error) {
       vm.error = error
     });
 
   this.startRecording = function () {
+    vm.src = '';
     vm.recorder.startRecording();
-    vm.status = 'start';
+    vm.status = 'recording';
+    $scope.$broadcast('recording');
 
     $log.log(this.recorder);
   };
 
+  this.replay = function () {
+    $scope.$broadcast('replaying');
+    vm.status = 'replaying';
+  };
+
+  this.stop = function () {
+    vm.status = 'paused';
+    $scope.$broadcast('paused');
+  };
+
   this.stopRecording = function () {
-    vm.status = 'stop';
+    this.stop();
 
     this.recorder.stopRecording()
       .then(function (url) {
         vm.src = $sce.trustAsResourceUrl(url);
         $scope.$digest();
-      })
+      });
   };
   
   this.saveRecording = function () {
     var blob = this.recorder.getBlob();
     this.save(blob);
-  }
+  };
 }
