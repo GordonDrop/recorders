@@ -1,3 +1,12 @@
 <recorder
+    on-save="vm.onSave"
     options="vm.audioOptions">
 </recorder>
+
+<hr>
+
+<ul>
+    <li ng-repeat="file in vm.mediaList">
+        <a ng-href="{{file.url}}" target="_blank">{{file.blob.name}}</a>
+    </li>
+</ul>

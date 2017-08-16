@@ -12,9 +12,6 @@
   },
   "devDependencies": {},
   "overrides": {
-    "video.js": {
-
-    },
     "videojs-record": {
       "video.js": "videojs#^5.2.2",
       "recordrtc": "^5.4.2"

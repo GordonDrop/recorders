@@ -7,7 +7,9 @@ angular
   });
 
 function Controller() {
-  this.audioOptions = {
+  var vm = this;
+
+  vm.audioOptions = {
     controls: true,
     width: 640,
     height: 480,
@@ -29,4 +31,10 @@ function Controller() {
       }
     }
   };
+
+  vm.mediaList = [];
+
+  vm.onSave = function (fileObject) {
+    vm.mediaList.push(fileObject);
+  }
 }
