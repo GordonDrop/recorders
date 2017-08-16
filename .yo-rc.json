@@ -11,7 +11,7 @@
       "namespace": "fountain-angular1:app",
       "_": [],
       "sample": "hello",
-      "router": "none"
+      "router": "uirouter"
     }
   }
 }
