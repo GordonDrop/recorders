@@ -2,6 +2,7 @@ angular
   .module('app')
   .directive('recorder', recorder);
 
+// MOVE to service
 var DEFAULTS = {
   controls: true,
   width: 640,
@@ -19,13 +20,45 @@ var DEFAULTS = {
     record: {
       audio: true,
       video: false,
-      maxLength: 20,
-      debug: true
+      maxLength: 30,
+      debug: true,
+      audioEngine: 'recordrtc',
+      audioWorkerURL: ''
     }
   }
 };
 
-function recorder() {
+var MP3_DEAFAULTS = {
+  plugins: {
+    record: {
+      audioEngine: 'lamejs',
+      audioWorkerURL: '../../bower_components/lamejs/worker-example/worker-realtime.js'
+    }
+  }
+};
+
+var WEBM_DEAFULTS = {
+  plugins: {
+    record: {
+      audioEngine: 'recordrtc',
+      audioWorkerURL: ''
+    }
+  }
+};
+
+// Javascript ogg vorbis encoder.
+var LIBVORBIS_DEFAULTS = {
+  plugins: {
+    record: {
+      audioEngine: 'libvorbis.js',
+      audioWorkerURL: ''
+    }
+  }
+};
+
+var RECORDER_DEFAULTS = LIBVORBIS_DEFAULTS;
+
+function recorder(FileManagerService) {
   return {
     restrict: 'E',
     scope: {
@@ -40,7 +73,11 @@ function recorder() {
         var playerNode = $element[0].querySelector('.video-js');
         playerNode.id = 'player_' + $scope.$id;
 
-        $scope.options = angular.extend(DEFAULTS, $scope.options);
+        $scope.options = _.merge($scope.options, DEFAULTS);
+
+        $scope.options.plugins.record.audioEngine = RECORDER_DEFAULTS.plugins.record.audioEngine;
+        $scope.options.plugins.record.audioWorkerURL = RECORDER_DEFAULTS.plugins.record.audioWorkerURL;
+
         $scope.player = videojs(playerNode.id, $scope.options);
       }
       init();
@@ -54,6 +91,10 @@ function recorder() {
         $scope.player.on('finishRecord', function () {
           $scope.readyToSave = true;
           $scope.$digest();
+        });
+
+        $scope.player.on('deviceError', function() {
+          console.log('Device error:', $scope.player.deviceErrorCode);
         });
       }
       bindEvents();
@@ -72,7 +113,7 @@ function recorder() {
       };
 
       $scope.download = function () {
-        $scope.player.recorder.saveAs({'audio': 'recorderAudio'});
+        FileManagerService.invokeSaveAsDialog($scope.player.recordedData, 'recorderAudio');
       };
     }
   }

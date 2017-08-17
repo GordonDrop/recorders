@@ -8,13 +8,25 @@
     "video.js": "videojs#^5.2.2",
     "videojs-record": "^1.7.0",
     "wavesurfer.js": "^1.4.0",
-    "angular-ui-router": "1.0.6"
+    "angular-ui-router": "1.0.6",
+    "lamejs": "^1.2.0",
+    "libvorbis.js": "^1.1.2"
   },
   "devDependencies": {},
   "overrides": {
     "videojs-record": {
+      "main": [
+        "src/js/videojs.record.js",
+        "src/css/videojs.record.css",
+        "src/js/plugins/videojs.record.lamejs.js",
+        "src/js/plugins/videojs.record.libvorbis.js",
+        "src/js/plugins/videojs.record.opus-recorder.js",
+        "src/js/plugins/videojs.record.recorderjs.js"
+      ],
       "video.js": "videojs#^5.2.2",
-      "recordrtc": "^5.4.2"
+      "recordrtc": "^5.4.2",
+      "lamejs": "^1.2.0",
+      "libvorbis.js": "^1.1.2"
     },
     "wavesurfer.js": {
       "main": [
@@ -29,6 +41,9 @@
       "dependencies": {
         "lodash": "^4.17.4"
       }
+    },
+    "libvorbis.js": {
+      "main": "js/libvorbis.js"
     }
   }
 }
