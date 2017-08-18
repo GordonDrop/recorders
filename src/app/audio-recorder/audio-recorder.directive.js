@@ -3,7 +3,8 @@
     .module('app')
     .directive('audioRecorder', recorder);
 
-// MOVE to service
+// TODO: MOVE to service
+// TODO: check supported formats
   var DEFAULTS = {
     controls: true,
     width: 640,
@@ -29,53 +30,7 @@
     }
   };
 
-  var MP3_DEFAULTS = {
-    plugins: {
-      record: {
-        audioEngine: 'lamejs',
-        audioWorkerURL: '../../bower_components/lamejs/worker-example/worker-realtime.js'
-      }
-    }
-  };
-
-  var WEBM_DEFAULTS = {
-    plugins: {
-      record: {
-        audioEngine: 'recordrtc',
-        audioWorkerURL: ''
-      }
-    }
-  };
-
-// Javascript ogg vorbis encoder.
-  var LIBVORBIS_DEFAULTS = {
-    plugins: {
-      record: {
-        audioEngine: 'libvorbis.js',
-        audioWorkerURL: ''
-      }
-    }
-  };
-
-  var WAV_DEFAULTS = {
-    plugins: {
-      record: {
-        audioEngine: 'recorder.js',
-        audioWorkerURL: ''
-      }
-    }
-  };
-
-  var TYPE_VALUES = ['webm', 'ogg', 'wav', 'mp3'];
-
-  var TYPE_MAP = {
-    'mp3': MP3_DEFAULTS,
-    'webm': WEBM_DEFAULTS,
-    'ogg': LIBVORBIS_DEFAULTS,
-    'wav': WAV_DEFAULTS
-  };
-
-  function recorder(FileManagerService) {
+  function recorder(FileManagerService, AudioTypesService) {
     return {
       restrict: 'E',
       scope: {
@@ -85,8 +40,9 @@
       templateUrl: 'app/audio-recorder/audio-recorder.template.html',
 
       link: function ($scope, $element) {
-        $scope.engines = TYPE_VALUES;
-        $scope.currentEngine = TYPE_VALUES[0];
+        $scope.engines = AudioTypesService.getSupportedTypesNames();
+        $scope.currentEngine = $scope.engines[0];
+        $scope.typesMap = AudioTypesService.getSupportedTypes();
 
         function init() {
           $scope.readyToSave = false;
@@ -95,7 +51,7 @@
             $scope.options = _.merge(DEFAULTS, $scope.options);
           }
 
-          $scope.options = _.merge($scope.options, TYPE_MAP[$scope.currentEngine]);
+          $scope.options = _.merge($scope.options, $scope.typesMap[$scope.currentEngine]);
 
           var audioNode = createAudioNode();
           $element[0].querySelector('.video').appendChild(audioNode);

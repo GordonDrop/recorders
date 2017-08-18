@@ -6,7 +6,7 @@ angular
     controllerAs: 'vm'
   });
 
-function Controller(browserService) {
+function Controller() {
   var vm = this;
 
   vm.videoOptions = {
@@ -20,8 +20,7 @@ function Controller(browserService) {
       record: {
         audio: true,
         video: true,
-        maxLength: 5,
-        videoMimeType: browserService.isChrome() ? 'video/webm;codecs=H264' : 'video/mp4'
+        maxLength: 5
       }
     }
   };

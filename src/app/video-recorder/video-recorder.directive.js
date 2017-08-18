@@ -16,15 +16,14 @@
         audio: true,
         video: true,
         maxLength: 5,
-        debug: true,
-        videoMimeType: ''
+        debug: true
       }
     }
   };
 
 //  Use video/mp4 (Firefox) or video/webm;codecs=H264 (Chrome 52 and newer) for MP4.
 
-  function recorder(FileManagerService) {
+  function recorder(FileManagerService, BrowserService) {
     return {
       restrict: 'E',
       scope: {
@@ -34,22 +33,21 @@
       templateUrl: 'app/video-recorder/video-recorder.template.html',
 
       link: function ($scope, $element) {
-        // $scope.engines = TYPE_VALUES;
-        // $scope.currentEngine = TYPE_VALUES[0];
 
         function init() {
           $scope.readyToSave = false;
 
           if (!$scope.options) {
             $scope.options = _.merge(DEFAULTS, $scope.options);
+            $scope.options.plugins.record.videoMimeType = BrowserService.isChrome() ?
+              'video/webm;codecs=H264' :
+              'video/mp4'
           }
-
-          console.log($scope.options);
 
           var videoNode = createVideoNode();
           $element[0].querySelector('.video').appendChild(videoNode);
           $scope.player = videojs(videoNode.id, $scope.options);
-          console.log($scope.player);
+
           bindEvents();
         }
         init();

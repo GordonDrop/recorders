@@ -1,9 +1,9 @@
 ;(function () {
   angular
     .module('app')
-    .factory('browserService', browserService);
+    .factory('BrowserService', BrowserService);
 
-  function browserService() {
+  function BrowserService() {
     return {
       isMediaTypeSupported: isMediaTypeSupported,
       isOpera: isOpera,
