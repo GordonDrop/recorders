@@ -15,5 +15,9 @@ function routesConfig($stateProvider, $urlRouterProvider, $locationProvider) {
     .state('app.audio', {
       url: 'audio-record',
       component: 'audioRecord'
+    })
+    .state('app.video', {
+      url: 'video-record',
+      component: 'videoRecord'
     });
 }
