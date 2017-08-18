@@ -1,66 +1,71 @@
 ;(function () {
   angular
     .module('app')
-    .directive('videoRecorder', recorder);
+    .directive('audioRecorder', recorder);
 
-// MOVE to service
   var DEFAULTS = {
     controls: true,
-    width: 320,
-    height: 240,
-    controlBar: {
-      volumeMenuButton: false
-    },
+    width: 640,
+    height: 480,
     plugins: {
+      wavesurfer: {
+        src: 'live',
+        waveColor: 'green',
+        progressColor: '#2E732D',
+        debug: true,
+        cursorWidth: 1,
+        msDisplayMax: 20,
+        hideScrollbar: true
+      },
       record: {
         audio: true,
-        video: true,
-        maxLength: 5,
-        debug: true
+        video: false,
+        maxLength: 30,
+        debug: true,
+        audioEngine: 'recordrtc',
+        audioWorkerURL: ''
       }
     }
   };
 
-//  Use video/mp4 (Firefox) or video/webm;codecs=H264 (Chrome 52 and newer) for MP4.
-
-  function recorder(FileManagerService, BrowserService) {
+  function recorder(FileManagerService, AudioTypesService) {
     return {
       restrict: 'E',
       scope: {
         options: '=',
         onSave: '='
       },
-      templateUrl: 'app/video-recorder/video-recorder.template.html',
+      templateUrl: 'app/recorders/audio-recorder/audio-recorder.template.html',
 
       link: function ($scope, $element) {
+        $scope.engines = AudioTypesService.getSupportedTypesNames();
+        $scope.currentEngine = $scope.engines[0];
+        $scope.typesMap = AudioTypesService.getSupportedTypes();
 
         function init() {
           $scope.readyToSave = false;
 
           if (!$scope.options) {
             $scope.options = _.merge(DEFAULTS, $scope.options);
-            $scope.options.plugins.record.videoMimeType = BrowserService.isChrome() ?
-              'video/webm;codecs=H264' :
-              'video/mp4'
           }
 
-          var videoNode = createVideoNode();
-          $element[0].querySelector('.video').appendChild(videoNode);
-          $scope.player = videojs(videoNode.id, $scope.options);
+          $scope.options = _.merge($scope.options, $scope.typesMap[$scope.currentEngine]);
 
+          var audioNode = createAudioNode();
+          $element[0].querySelector('.viewport').appendChild(audioNode);
+          $scope.player = videojs(audioNode.id, $scope.options);
           bindEvents();
         }
         init();
 
-        function createVideoNode() {
-          var node = document.createElement('video');
+        function createAudioNode() {
+          var node = new Audio();
           node.id = 'player_' + $scope.$id;
           node.className = 'video-js vjs-default-skin';
 
           return node;
         }
         function reInit() {
-          $scope.player.stopDevice();
           $scope.player.dispose();
           init();
         }
@@ -90,7 +95,7 @@
 
         $scope.save = function () {
           var fileObject = {
-            blob: $scope.player.recordedData.video,
+            blob: $scope.player.recordedData,
             url: $scope.player.recorder.mediaURL
           };
 
@@ -98,7 +103,7 @@
         };
 
         $scope.download = function () {
-          FileManagerService.invokeSaveAsDialog($scope.player.recordedData.video, 'recorderVideo');
+          FileManagerService.invokeSaveAsDialog($scope.player.recordedData, 'recorderAudio');
         };
       }
     }

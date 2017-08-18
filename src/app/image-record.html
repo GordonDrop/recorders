@@ -1,0 +1,12 @@
+<image-recorder
+        on-save="vm.onSave"
+        options="vm.imageOptions">
+</image-recorder>
+
+<hr>
+
+<ul>
+    <li ng-repeat="file in vm.mediaList">
+        <img ng-src="{{file.url}}">
+    </li>
+</ul>

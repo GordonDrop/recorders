@@ -1,4 +1,4 @@
-<div class="video"></div>
+<div class="viewport"></div>
 
 <button
     ng-if="readyToSave"
@@ -13,9 +13,3 @@
         type="button">
     Download
 </button>
-
-<label>Record as:</label>
-<select
-    ng-model="currentEngine" ng-options="item for item in engines"
-    ng-change="setEngine()">
-</select>
