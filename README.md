@@ -2,6 +2,9 @@
 
 Set of angular directives wrapper for [videojs-recorder](https://github.com/collab-project/videojs-record).
 
+# Warning
+Work only with local build at the moment.
+
 # Directives:
 
  - `<audio-recorder options="options" on-save="onSave">`
