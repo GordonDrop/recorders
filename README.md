@@ -4,9 +4,9 @@ Set of angular directives wrapper for [videojs-recorder](https://github.com/coll
 
 # Directives:
 
- - '<audio-recorder options="options" on-save="onSave">'
- - '<video-recorder options="options" on-save="onSave">'
- - '<image-recorder options="options" on-save="onSave">'
+ - `<audio-recorder options="options" on-save="onSave">`
+ - `<video-recorder options="options" on-save="onSave">`
+ - `<image-recorder options="options" on-save="onSave">`
  
  # Options:
  All directive shares same options. 
