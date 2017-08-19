@@ -1,7 +1,7 @@
 ;(function () {
   angular
     .module('app')
-    .directive('videoRecorder', recorder);
+    .directive('videoRecorder', videoRecorder);
 
   var DEFAULTS = {
     controls: true,
@@ -20,7 +20,11 @@
     }
   };
 
-  function recorder(FileManagerService, BrowserService) {
+  function videoRecorder(
+    FileManagerService,
+    BrowserService,
+    RecorderFactory
+  ) {
     return {
       restrict: 'E',
       scope: {
@@ -30,61 +34,18 @@
       templateUrl: 'app/recorders/video-recorder/video-recorder.template.html',
 
       link: function ($scope, $element) {
+        RecorderFactory.mix($scope, $element, 'video');
+        $scope.DEFAULTS = DEFAULTS;
 
-        function init() {
-          $scope.readyToSave = false;
+        $scope.setup = function () {
+          $scope.options = _.merge($scope.DEFAULTS, $scope.options);
+          $scope.options.plugins.record.videoMimeType = BrowserService.isChrome() ?
+            'video/webm;codecs=H264' :
+            'video/mp4'
+        };
 
-          if (!$scope.options) {
-            $scope.options = _.merge(DEFAULTS, $scope.options);
-            $scope.options.plugins.record.videoMimeType = BrowserService.isChrome() ?
-              'video/webm;codecs=H264' :
-              'video/mp4'
-          }
-
-          var videoNode = createVideoNode();
-          $element[0].querySelector('.viewport').appendChild(videoNode);
-          $scope.player = videojs(videoNode.id, $scope.options);
-
-          bindEvents();
-        }
-        init();
-
-        function createVideoNode() {
-          var node = document.createElement('video');
-          node.id = 'player_' + $scope.$id;
-          node.className = 'video-js vjs-default-skin';
-
-          return node;
-        }
-
-        function reInit() {
-          $scope.player.stopDevice();
-          $scope.player.dispose();
-          init();
-        }
-
-        function bindEvents() {
-          $scope.player.on('startRecord', function () {
-            $scope.readyToSave = false;
-            $scope.$digest();
-          });
-
-          $scope.player.on('finishRecord', function () {
-            $scope.readyToSave = true;
-            $scope.$digest();
-          });
-
-          $scope.player.on('deviceError', function() {
-            console.log('Device error:', $scope.player.deviceErrorCode);
-          });
-
-          $scope.$on('$destroy', function () {
-            $scope.player.recorder.stopDevice();
-            $scope.player.dispose();
-          });
-        }
-
-        $scope.setEngine = reInit;
+        $scope.init();
+        $scope.setEngine = $scope.reInit;
 
         $scope.save = function () {
           var fileObject = {

@@ -28,7 +28,6 @@ function Controller() {
   vm.mediaList = [];
 
   vm.onSave = function (fileObject) {
-    debugger
     vm.mediaList.push(fileObject);
   }
 }
